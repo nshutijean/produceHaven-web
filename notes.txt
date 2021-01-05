@@ -1,0 +1,56 @@
+Trying Laravel 7 here😒
+Because Passport's multi guard couldnt work in 5.8
+
+Let's see what's up
+
+I removed these: 
+    "sass": "^1.20.1",
+    "sass-loader": "^8.0.0",
+    from package.json
+
+After 2 days of trial and error, i failed miserably to create a multi auth functionality (admin + user),
+ hopefully it will work in another lifetime.
+
+ console.log(localStorage.getItem('bigStore.jwt'));
+                this.form.post('api/login-admin', this.form)
+                .then((response) => {
+                    console.log(response.data);
+                }).catch((err) => {
+                    console.log(err);
+                });
+                // console.log(this.form)
+                // let email = this.form.email;
+                // let password = this.form.password;
+                // this.form.post('api/login-admin', {email, password})
+                // .then((response) => {
+                //     console.log(response.data);
+                    
+                //     let user = response.data.user;
+                //     // let is_admin = user.is_admin;
+
+                //     localStorage.setItem('bigStore.user', JSON.stringify(user));
+                //     localStorage.setItem('bigStore.jwt', response.data.token);
+
+                //     // console.log(localStorage.getItem('bigStore.jwt'));
+
+                //     if(localStorage.getItem('bigStore.jwt') != null) {
+                        
+                //         this.$emit('loggedIn');
+                //         if(this.$route.params.nextUrl != null) {
+                //             this.$router.push(this.$route.params.nextUrl)
+                //         } else {
+                //             this.$router.push({name: 'admin-panel'});
+                //             // this.$router.push((is_admin == 1 ? 'admin' : 'dashboard'));
+                //         }
+                //         this.form.reset();
+                //     } 
+                    
+                // }).catch(() => {
+                //     if(localStorage.getItem('bigStore.jwt') == null) {
+                //         Toast.fire({
+                //             icon: 'error',
+                //             title: 'Email and password mismatch'
+                //         })
+                //         this.form.reset();
+                //     }
+                // });
