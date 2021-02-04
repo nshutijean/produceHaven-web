@@ -4220,6 +4220,11 @@ __webpack_require__.r(__webpack_exports__);
     axios.get('/api/vegetables').then(function (response) {
       return _this.veggies = response.data;
     });
+  },
+  methods: {
+    printPdf: function printPdf() {
+      window.print();
+    }
   }
 });
 

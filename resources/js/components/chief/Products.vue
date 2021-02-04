@@ -81,5 +81,10 @@ export default {
         axios.get('/api/vegetables').then(response => this.veggies = response.data)
 
     },
+    methods: {
+        printPdf() {
+            window.print();
+        }
+    },
 }
 </script>

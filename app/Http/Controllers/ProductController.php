@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Storage;
 use Auth;
 use DB;
+use DateTime;
 
 
 class ProductController extends Controller
@@ -89,6 +90,7 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->category = $request->category;
         $product->image = $request->image;
+        $product->expires_at = new DateTime(add(new DateInterval('P15D')));
         $product->user_id = Auth::id();
         $product->qrcodeUrl = url('/').'/storage/app/public/qrcode_img/'.$file_name;
 

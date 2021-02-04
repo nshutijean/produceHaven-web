@@ -17,11 +17,6 @@
             <router-view></router-view>
         </app>
     </div>
-    <center>
-        <footer>
-            <p>&copy; Produce Haven Trade 2020</p>
-        </footer>
-    </center>
     <script src="{{ mix('js/bootstrap.js') }}"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 </body>
