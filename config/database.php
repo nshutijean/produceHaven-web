@@ -64,8 +64,8 @@ return [
         // ],
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('https://www.db4free.net/'),
-            'host' => env('DB_HOST', '127.0.0.1'),
+            // 'url' => env('https://www.db4free.net/'),
+            'host' => env('DB_HOST', 'https://www.db4free.net/'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'producehavendb'),
             'username' => env('DB_USERNAME', 'root73'),
