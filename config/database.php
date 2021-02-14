@@ -64,8 +64,8 @@ return [
         // ],
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('https://producehaven.herokuapp.com/'),
-            'host' => env('DB_HOST', 'https://www.db4free.net/'),
+            'url' => env('producehaven.herokuapp.com'),
+            'host' => env('DB_HOST', 'db4free.net'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'producehavendb'),
             'username' => env('DB_USERNAME', 'root73'),
