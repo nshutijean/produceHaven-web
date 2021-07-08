@@ -85,8 +85,8 @@
                             </router-link>
                         </li>
                         <li>
-                            <a href="#" @click="logout">
-                                <i class="fa fa-power-off"></i>
+                            <a @click="logout()">
+                                <i class="fa fa-power-off" style="color:red;"></i>
                                 <span class="menu-text">Logout</span>
                             </a>
                         </li>
@@ -110,18 +110,44 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 export default {
     methods: {
         toggleMenu() {
             $(".page-wrapper").toggleClass("toggled");
         },
         logout() {
-            this.$router.push({name: 'admin-login'});
-            //or add a question to confuze them🙄
-            Toast.fire({
-                icon: 'success',
-                title: 'Admin is logged out'
+            firebase.auth().signOut()
+            .then(() => {
+                // alert('Logged out')
+                this.$router.push('/admin/login');
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Admin is logged out'
+                })
             })
+            .catch(error => {
+                Toast.fire({
+                    icon: 'error',
+                    title: `${error.message}`
+                })
+                this.$router.push('/admin/login');
+                });
+            // Swal.fire({
+            //         title: 'Are you sure?',
+            //         text: "You will be logged out!",
+            //         icon: 'warning',
+            //         showCancelButton: true,
+            //         confirmButtonColor: '#3085d6',
+            //         cancelButtonColor: '#d33',
+            //         confirmButtonText: 'Yes, Log out!'
+            //     })
+            //     .then((result) => {
+            //         if(result.isConfirmed) {
+                        
+            //         }
+            //     })
+            
         }
     },
 }

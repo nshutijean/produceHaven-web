@@ -11,7 +11,7 @@
                         <li><router-link :to="{name: 'vegetables'}">Vegetables</router-link></li>
                     </ul>
                     <div class="row">
-                        <div class="col-md-3 product-box rounded mr-0.5" v-for="(product,index) in products" v-bind:key="index">
+                        <div class="col-md-3 product-box rounded mr-0.5" v-for="(product,index) in filteredVegetables" v-bind:key="index">
                             <div v-if="product.category == 'vegetable'">
                                 <router-link :to="{path: '/products/'+product.id}">
                                     <img :src="product.image" :alt="product.name" class="img-fluid rounded mb-3">
@@ -35,12 +35,18 @@
 export default {
     data() {
         return {
-            products: []
+            products: [],
+            category: "vegetable"
         }
     },
     //mounted() is called after a component is loaded
     mounted() {
-        axios.get("api/products").then(response => this.products = response.data);
+        axios.get("api/products").then(response => this.products = response.data.data);
+    },
+    computed: {
+        filteredVegetables() {
+            return this.products.filter(product => !product.category.indexOf(this.category));
+        }
     },
 }
 </script>

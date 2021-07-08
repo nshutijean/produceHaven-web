@@ -1,0 +1,142 @@
+<template>
+    <div class="container mt-3">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-default">
+                    <div class="card-header">
+                        <span>Have an account?</span><router-link :to="{name: 'login'}" class="ml-2">Login Here!</router-link>
+                        <br>
+                        <span style="font-size: 18px;"><b>Register</b></span> 
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="post">
+                            <!-- Name -->
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label text-md-right">Name</label>
+                                <div class="col-md-6">
+                                    <input v-model="form.name" type="text" name="name"
+                                    class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
+                                    <has-error :form="form" field="name"></has-error>
+                                </div>
+                            </div>
+                            <!-- Email -->
+                            <div class="form-group row">
+                                <label for="email" class="col-md-4 col-form-label text-md-right">Email Address</label>
+                                <div class="col-md-6">
+                                    <input v-model="form.email" type="email" name="email"
+                                    class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
+                                    <has-error :form="form" field="email"></has-error>
+                                </div>
+                            </div>
+                            <!-- Phone number -->
+                            <div class="form-group row">
+                                <label for="phoneNumber" class="col-md-4 col-form-label text-md-right">Phone Number</label>
+                                <div class="col-md-6">
+                                    <input v-model="form.phoneNumber" type="text" name="phoneNumber"
+                                    class="form-control" :class="{ 'is-invalid': form.errors.has('phoneNumber') }">
+                                    <has-error :form="form" field="phoneNumber"></has-error>
+                                </div>
+                            </div>
+                            <!-- Password -->
+                            <div class="form-group row">
+                                <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                                <div class="col-md-6">
+                                    <input v-model="form.password" type="password" name="password"
+                                    class="form-control" :class="{ 'is-invalid': form.errors.has('password') }">
+                                    <has-error :form="form" field="password"></has-error>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="password-confirm" class="col-md-4 col-form-label text-md-right">Confirm Password</label>
+                                <div class="col-md-6">
+                                    <input v-model="form.c_password" type="password" name="c_password"
+                                    class="form-control">
+                                    <!-- <has-error :form="form" field="password_confirmation"></has-error> -->
+                                </div>
+                            </div>
+                            <div class="form-group row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-primary" @click.prevent="handleSubmit">Register</button>
+                                    <div class="float-right mt-2">
+                                        <span>Are you a vendor?</span>
+                                        <router-link :to="{name: 'vendor'}" class="ml-2">Register Here!</router-link>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    props: ['nextUrl'],
+    data() {
+        return {
+            form: new Form({
+                name: "",
+                email: "",
+                phoneNumber: "",
+                password: "",
+                c_password: ""
+            })
+            
+        }
+    },
+    methods: {
+        handleSubmit(e) {
+            e.preventDefault();
+            
+            let name = this.form.name;
+            let email = this.form.email;
+            let phoneNumber = this.form.phoneNumber;
+            let password = this.form.password;
+            let c_pass = this.form.c_password;
+            this.form.post('api/register-buyer', {name, email, phoneNumber, password, c_pass})
+                .then(response => {
+                    
+                    let data = response.data;
+                    localStorage.setItem('bigStore.user', JSON.stringify(data.user));
+                    localStorage.setItem('bigStore.jwt', data.token);
+                    if(localStorage.getItem('bigStore.jwt') != null) {
+                        this.$emit('loggedIn');
+                        let nextUrl = this.$route.params.nextUrl;
+                        this.$router.push((nextUrl != null ? nextUrl : '/'))
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: data.message
+                        })
+                    }
+                    console.log(data);
+                    this.form.reset();
+                }).catch((err) => {
+                    if(this.form.password !== this.form.c_password) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Passwords do not match'
+                        })
+                    } 
+                    else {
+                        if(Object.keys(this.form).length === 0) {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Please fill in the form'
+                            })
+                        } else {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Oops😑 An error occured!'
+                            })
+                        }
+                        
+                    }
+                    
+                });
+        }
+    },
+}
+</script>
