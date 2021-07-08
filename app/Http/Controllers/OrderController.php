@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Order;
+use App\Product;
 use DB;
 use Illuminate\Http\Request;
 
@@ -20,8 +21,14 @@ class OrderController extends Controller
     }
 
     public function allOrders() {
-        return response()->json(Order::all(), 200);
+        // return response()->json(Order::all(), 200);
+        $data = Order::latest()->paginate(8);
+        return response()->json($data, 200);
     }
+    // public function paginatedOrders() {
+    //     $data = Order::latest()->paginate(8);
+    //     return response()->json($data, 200);
+    // }
 
     //Delivered method
     public function deliverOrder(Order $order) {
@@ -51,6 +58,11 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    // public function multiStore(Request $request) {
+
+    // }
+
     public function store(Request $request)
     {
         $order = Order::create([
@@ -59,12 +71,31 @@ class OrderController extends Controller
             'quantity' => $request->quantity,
             'address' => $request->address
         ]);
+        // $order = new Order;
+        //retrieve all products(with their orders)
+        // $products = Product::where('user_id', Auth::id())->get();
+        // $orders = Order::with(['product'])->get();
+        // $order->quantity = $request->quantity;
+        // $quantity = $order->quantity;
+        // Product::where('id', $request->product_id)->decrement('units',$request->quantity);
+        
+        // foreach($orders as $ord) {
+        //     
+        // }
+
+        
 
         return response()->json([
             'status' => (bool) $order,
             'data' => $order,
             'message' => $order ? 'Order created' : 'Error creating order'
         ]);
+    }
+
+    public function decrementQuantity() {
+        // return response->json(
+        //     Product::where('user_id', Auth::id())->decrement('units',$ord->quantity), 200
+        // );
     }
 
     /**
@@ -116,7 +147,7 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        $status = $order->delete();
+        $status = $order->delete(); 
 
         return repsonse()->json([
             'status' => $status,
@@ -125,10 +156,10 @@ class OrderController extends Controller
     }
 
     public function countDelivered() {
-        return response()->json(Order::where('is_delivered', '1')->get()->count(), 200);
+        return response()->json(Order::where('is_delivered', 1)->get()->count(), 200);
     }
 
     public function pendingOrders() {
-        return response()->json(Order::where('is_delivered', '0')->get()->count(), 200);
+        return response()->json(Order::where('is_delivered', 0)->get()->count(), 200);
     }
 }

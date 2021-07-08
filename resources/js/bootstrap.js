@@ -21,12 +21,7 @@ try {
 
 window.axios = require('axios');
 
-let token = window.$('meta[name="csrf-token"]').attr('content');
-window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-
-
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -42,5 +37,5 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     broadcaster: 'pusher',
 //     key: process.env.MIX_PUSHER_APP_KEY,
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     encrypted: true
+//     forceTLS: true
 // });

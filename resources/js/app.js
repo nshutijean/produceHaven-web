@@ -1,40 +1,29 @@
+// @ts-nocheck
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+// window.Vue = require('vue');
+import Vue from 'vue'
 
 //css
 // import '../../public/css/main.scss';
 
 //router
 import VueRouter from 'vue-router';
+Vue.use(VueRouter);
 
 //vuex(states)
 import Vuex from 'vuex'
 Vue.use(Vuex);
 
-//where states are globally stored
+// where states are globally stored
 import store from './store';
+
 
 //sweetalert
 import Swal from 'sweetalert2';
-
-//vForm
-import { Form, HasError, AlertError } from 'vform';
-
-
-
-//FlutterWave payment
-import Flutterwave from  'flutterwave-vue-v3'
-//FLWPUBK-ef3f99af7ec1c029e59b55deb1c8fee6-X <-- use this public key for a live payment session
-Vue.use(Flutterwave, { publicKey: 'FLWPUBK_TEST-a0666b74be0cfbf3fd44453cc3b41a12-X' } )
-
-
-
-Vue.use(VueRouter);
 //global sweet alert
 window.Swal = Swal;
-
 //toast
 const Toast = Swal.mixin({
     toast: true,
@@ -47,35 +36,67 @@ const Toast = Swal.mixin({
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
-
 //using toast globally
 window.Toast = Toast;
 
-//global vform variable
+
+//vForm
+import { Form, HasError, AlertError } from 'vform';
+//global vform variables
 window.Form = Form;
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 
-//using progressBar
-// Vue.use(VueProgressBar, {
-//     color: 'rgb(143, 255, 199)',
-//     failedColor: 'red',
-//     height: '4px'
-// })
 
-import App from './components/App';
-import Home from './components/Home';
-import Login from './components/Login';
-import Register from './components/Register';
-import SingleProduct from './components/SingleProduct';
-import Checkout from './components/Checkout';
-import Confirmation from './components/Confirmation'; 
-import UserBoard from './components/UserBoard'
-import Admin from './components/Admin'
+//FlutterWave payment
+import Flutterwave from  'flutterwave-vue-v3'
+//FLWPUBK-ef3f99af7ec1c029e59b55deb1c8fee6-X <-- use this public key for a live payment session
+Vue.use(Flutterwave, { publicKey: 'FLWPUBK_TEST-cb9f8594ac0431197c84d4de4af7e6e9-X' } )
+
+//laravel-vue-pagination dependency global variable
+Vue.component('pagination', require('laravel-vue-pagination'));
+
+
+//firebase config
+import firebase from "firebase";
+//firebase auth on the Administrator
+var firebaseConfig = {
+    apiKey: "AIzaSyDUfmX9uIEag4MEYPlJgIMI2esPSNCeRFw",
+    authDomain: "vue-firebase-auth-7e65f.firebaseapp.com",
+    projectId: "vue-firebase-auth-7e65f",
+    storageBucket: "vue-firebase-auth-7e65f.appspot.com",
+    messagingSenderId: "1098044983266",
+    appId: "1:1098044983266:web:8fcf1a44f5cfbd7870dbbb"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+
+//components
+// import App from './components/App';
+import App from './components/main/revised/App';
+import NavBar from './components/main/revised/NavBar'
+import Hero from './components/main/revised/Hero'
+// import Home from './components/main/Home';
+import Home from './components/main/revised/Home';
+import Footer from './components/main/revised/Footer';
+import Login from './components/main/Login';
+import Register from './components/main/Register';
+// import SingleProduct from './components/main/SingleProduct';
+import SingleProduct from './components/main/revised/SingleProduct';
+// import Checkout from './components/main/Checkout';
+import Checkout from './components/main/revised/Checkout';
+import Confirmation from './components/main/Confirmation'; 
+// import MultipleCheckout from './components/main/MultipleCheckout';
+import MultipleCheckout from './components/main/revised/MultipleCheckout';
+// import UserBoard from './components/main/UserBoard'
+import UserBoard from './components/main/revised/UserBoard'
+import Admin from './components/main/Admin'
 import Fruits from './components/categories/Fruits'
 import Vegetables from './components/categories/Vegetables'
-import Cart from './components/Cart';
-import AdminRegister from './components/AdminRegister';
+// import Cart from './components/main/Cart';
+import Cart from './components/main/revised/Cart';
+import AdminRegister from './components/main/AdminRegister';
 
 //admin panel components
 import AdminLogin from './components/chief/AdminLogin';
@@ -86,8 +107,12 @@ import Orders from './components/chief/Orders';
 import Users from './components/chief/Users';
 import Reports from './components/chief/Reports';
 
+//Reset password
+import ForgotPassword from './components/resetpassword/ForgotPassword.vue';
+import ResetPasswordForm from './components/resetpassword/ResetPasswordForm.vue';
 
 
+//filters
 //capitalize filter for first letter
 Vue.filter('capitalize', function(text) {
     text = text.toString();
@@ -99,6 +124,7 @@ Vue.filter('formatCurrency', function (value) {
 	return formatNumber(value, 2, '.', ',');
 });
 
+//change 1s to vendors and 0s to buyer
 Vue.filter('setType', function(type) {
     if(type == 0) {
         return "Buyer";
@@ -107,11 +133,27 @@ Vue.filter('setType', function(type) {
     }
 })
 
-//routes
 
+//routes
 const router = new VueRouter({
     mode: 'history',
     routes: [
+        {
+            path: '/reset-password',
+            name: 'reset-password',
+            component: ForgotPassword,
+            meta: {
+                auth: false
+            }
+        },
+        {
+            path: '/reset-password/:token',
+            name: 'reset-password-form',
+            component: ResetPasswordForm,
+            meta: {
+                auth: false
+            }
+        },
         {
             path: '/admin/panel',
             name: 'admin-panel',
@@ -142,8 +184,10 @@ const router = new VueRouter({
                     name: 'reports',
                     component: Reports,
                 },
-
-            ]
+            ],
+            meta: {
+                fbAuthRequired: true
+            }
         },
         {
             path: '/admin/login',
@@ -152,7 +196,7 @@ const router = new VueRouter({
         },
         {
             path: '/vendor-register',
-            name: 'vendor',
+            name: 'vendor-register',
             component: AdminRegister
         },
         {
@@ -196,6 +240,11 @@ const router = new VueRouter({
             component: Confirmation
         },
         {
+            path: '/multi-checkout',
+            name: 'multi-checkout',
+            component: MultipleCheckout
+        },
+        {
             path: '/checkout',
             name: 'checkout',
             component: Checkout,
@@ -211,7 +260,7 @@ const router = new VueRouter({
             }
         },
         {
-            path: '/admin/:page',
+            path: '/vendor/:page',
             name: 'admin-pages',
             component: Admin,
             meta: {
@@ -221,9 +270,9 @@ const router = new VueRouter({
             
         },
         {
-            path: '/admin',
-            name: 'admin',
-            component: Admin,
+            path: '/vendor',
+            name: 'vendor',
+            component: Admin, 
             meta: {
                 requiresAuth: true,
                 is_admin: true
@@ -257,12 +306,23 @@ router.beforeEach((to, from, next) => {
                     next()
                 }
                 else {
-                    next({ name: 'admin' })
+                    next({ name: 'vendor' })
                 }
             }
             next()
         }
-    } else {
+    } 
+    // else if (to.matched.some(record => record.meta.fbAuthRequired)) {
+    //     if (firebase.auth().currentUser) {
+    //       next();
+    //     } else {
+    //       alert('You must be logged in to see this page');
+    //       next({
+    //         path: '/admin/login',
+    //       });
+    //     }
+    // }
+    else {
         next()
     }
 })

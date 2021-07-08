@@ -22,7 +22,7 @@ class CreateProductsTable extends Migration
             $table->double('price');
             $table->string('image');
             $table->string('category');
-            $table->string('expires_at');
+            $table->string('certificate');
             // $table->string('qrcodeUrl')->nullable();
             $table->timestamps();
             $table->softDeletes();

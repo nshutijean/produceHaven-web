@@ -16,10 +16,10 @@
                                                     <span>Products</span>
                                                 </div>
                                                 <div class="text-dark font-weight-bold h5 mb-0">
-                                                    <span>{{products.length}}</span>
+                                                    <span>{{products !== [] ? products : 0}}</span>
                                                 </div>
                                             </div>
-                                            <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                                            <div class="col-auto"><i class="fas fa-list fa-2x"></i></div>
                                         </div>
                                     </div>
                                 </div>
@@ -33,10 +33,10 @@
                                                     <span>Orders</span>
                                                 </div>
                                                 <div class="text-dark font-weight-bold h5 mb-0">
-                                                    <span>{{orders.length}}</span>
+                                                    <span>{{orders !== [] ? orders : 0}}</span>
                                                 </div>
                                             </div>
-                                            <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
+                                            <div class="col-auto"><i class="fas fa-shopping-cart fa-2x text-blue-300"></i></div>
                                         </div>
                                     </div>
                                 </div>
@@ -50,10 +50,10 @@
                                                     <span>Buyers</span>
                                                 </div>
                                                 <div class="text-dark font-weight-bold h5 mb-0">
-                                                    <span>{{buyers}}</span>
+                                                    <span>{{buyers.length != 0 ? buyers : "0"}}</span>
                                                 </div>
                                             </div>
-                                            <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
+                                            <div class="col-auto"><i class="fas fa-user fa-2x text-green-300"></i></div>
                                         </div>
                                     </div>
                                 </div>
@@ -67,16 +67,17 @@
                                                     <span>Vendors</span>
                                                 </div>
                                                 <div class="text-dark font-weight-bold h5 mb-0">
-                                                    <span>{{vendors}}</span>
+                                                    <span>{{vendors.length != 0 ? vendors : "0"}}</span>
                                                 </div>
                                             </div>
-                                            <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
+                                            <div class="col-auto"><i class="fas fa-user fa-2x text-gray-300"></i></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
                 <!-- users chart -->
                 <div class="row">
                 <div class="col-md-4">
@@ -103,10 +104,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="chart-area">
-                                    <orders-chart></orders-chart>
+                                    <orders-chart style=""></orders-chart>
                                     <div class="text-center small mt-4">
-                                        <span class="mr-2"><i class="fas fa-circle text-primary"></i>&nbsp;Pending</span>
                                         <span class="mr-2"><i class="fas fa-circle text-success"></i>&nbsp;Ordered</span>
+                                        <span class="mr-2"><i class="fas fa-circle text-primary"></i>&nbsp;Pending</span>
                                         <span class="mr-2"><i class="fas fa-circle text-dark"></i>&nbsp;Delivered</span>
                                     </div>
                                 </div>
@@ -144,7 +145,8 @@
     </div>
 </template>
 
-<script>
+<script>// @ts-nocheck
+
 import UsersChart from './usersChart'
 import OrdersChart from './OrdersChart'
 import ProductsChart from './ProductsChart'
@@ -165,27 +167,23 @@ export default {
         }
     },
     mounted() {
-        axios.get('/api/products/').then(response => this.products = response.data)
+        axios.get('/api/products/').then(response => {
+            this.products = response.data.total;
+            // console.log(response.data.total);
+        })
         axios.get('/api/all-users/')
         .then((response) => {
             this.users = response.data
             // console.log(response.data);
         })
-        axios.get('/api/all-orders/').then(response => this.orders = response.data)
+        axios.get('/api/all-orders/').then(response => this.orders = response.data.total)
         axios.get('/api/buyers/').then(response => this.buyers = response.data)
         axios.get('/api/vendors/').then(response => this.vendors = response.data)
         
-    },
-    methods: {
-        countBuyers() {
-            // this.users.forEach(element => {
-            //     console.log(element);
-            // });
-        }
     },
 };
 </script>
 
 <style lang="sass" scoped>
-    @import 'resources/sass/overview.scss';
+    @import 'resources/sass/overview.scss'
 </style>

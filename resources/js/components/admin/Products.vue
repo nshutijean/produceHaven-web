@@ -1,59 +1,108 @@
 <template>
     <div>
-        <table class="table table-responsive table-striped">
-            <thead>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(product, index) in products" :key="index" @dblclick="editingItem = product">
-                    <td>{{index+1}}</td>
-                    <td v-html="product.name"></td>
-                    <td v-html="product.category">
-                        <!-- <select id="cat" v-model="product.category">
+        <div>
+            
+            <!-- <div v-if="products.data == null" class="mt-3">
+                <p>
+                    The problem is on our side. Refresh the page or <a href="#">contact us</a>
+                </p>
+            </div> -->
+            <div> 
+                <div v-if="products.data = []" class="mt-3">
+                    <p>
+                        No products uploaded yet, add one by clicking the button below
+                    </p>
+                </div>
+                <table v-else class="table table-responsive table-striped">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(product, index) in products.data"
+                            :key="index"
+                            @dblclick="editingItem = product"
+                        >
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>
+                                <!-- <select id="cat" v-model="product.category">
                             <option selected value="category">Fruit</option>
                             <option value="vegetable">Vegetable</option>
                         </select> -->
-                    </td>
-                    <td v-html="product.units">    
-                        <!-- <input type="text" v-model="product.units"> -->
-                    </td>
-                    <td v-html="product.price">
-                        <!-- <input type="text" v-model="product.price"> -->
-                    </td>
-                    <td v-html="product.description">
-                        <!-- <input type="text" v-model="product.description"> -->
-                    </td>
-                </tr>
-            </tbody>
-        </table >
-        <Modal @close="endEditing" :product="editingItem" v-show="editingItem != null"/>
-        <Modal @close="addProduct" :product="addingProduct" v-show="addingProduct != null"/>
-        <br>
-        <button class="btn btn-primary" @click="newProduct">Add New Product</button>
+                                {{ product.category }}
+                            </td>
+                            <td>
+                                <!-- <input type="text" v-model="product.units"> -->
+                                {{ product.units }}
+                            </td>
+                            <td>
+                                <!-- <input type="text" v-model="product.price"> -->
+                                {{ product.price }}
+                            </td>
+                            <td>
+                                <!-- <input type="text" v-model="product.description"> -->
+                                {{ product.description }}
+                                <div
+                                    class="float-right ml-5"
+                                    style="color:red; cursor:pointer"
+                                    @click="deleteProduct(product)"
+                                >
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <pagination
+                :data="products"
+                @pagination-change-page="getResults"
+            ></pagination>
+        </div>
+        <Modal
+            @close="endEditing"
+            :product="editingItem"
+            v-show="editingItem != null"
+        />
+        <Modal
+            @close="addProduct"
+            :product="addingProduct"
+            v-show="addingProduct != null"
+        />
+        <br />
+        <button class="btn btn-primary" @click="newProduct">
+            Add New Product
+        </button>
     </div>
 </template>
 
 <script>
-import Modal from './Modal';
+import Modal from "./Modal";
 export default {
-    
     data() {
         return {
-            products: [],
+            products: {},
             editingItem: null,
             addingProduct: null
-        }
+        };
     },
-    components: {Modal},
-    beforeMount() {
-        axios.get('/api/products/').then(response => this.products = response.data)
+    components: { Modal },
+    // beforeMount() {
+    //     axios.get('/api/products/').then(response => this.products = response.data)
+    // },
+    mounted() {
+        this.getResults();
     },
     methods: {
         newProduct() {
@@ -63,13 +112,14 @@ export default {
                 price: null,
                 image: null,
                 description: null,
-                category: null
-            }
+                category: null,
+                certificate: null
+            };
         },
         endEditing(product) {
             this.editingItem = null;
 
-            let index = this.products.indexOf(product);
+            let index = this.products.data.indexOf(product);
             let name = product.name;
             let units = product.units;
             let price = product.price;
@@ -77,8 +127,63 @@ export default {
             let category = product.category;
 
             //update
-            axios.put(`/api/products/${product.id}`, {name, units, price, description, category})
-                .then(response => this.products[index] = product)
+            axios
+                .put(`/api/products/${product.id}`, {
+                    name,
+                    units,
+                    price,
+                    description,
+                    category
+                })
+                .then(response => (this.products[index] = product));
+        },
+        // deletes by id
+        deleteProduct(product) {
+            let index = this.products.data.indexOf(product);
+            // axios
+            //     .delete(`/api/products/${product.id}`)
+            //     .then(result => {
+            //         // console.log("Deleting...")
+            //         this.products.data.splice(index, 1);
+            //         // console.log("Deleted!")
+            //         Swal.fire(
+            //             "Deleted!",
+            //             "Your file has been deleted.",
+            //             "success"
+            //         );
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //     });
+            Swal.fire({
+                title: 'Do you want to delete this product?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: `Delete`,
+                // denyButtonText: `Don't save`,
+                }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    axios
+                    .delete(`/api/products/${product.id}`)
+                    .then(result => {
+                        // console.log("Deleting...")
+                        this.products.data.splice(index, 1);
+                        // console.log("Deleted!")
+                        Swal.fire(
+                            "Deleted!",
+                            "Your file has been deleted.",
+                            "success"
+                        );
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+                } 
+                // else if (result.isDenied) {
+                //     Swal.fire('Changes are not saved', '', 'info')
+                // }
+                })
         },
         addProduct(product) {
             this.addingProduct = null;
@@ -88,15 +193,39 @@ export default {
             let price = product.price;
             let description = product.description;
             let image = product.image;
-            let category = product.category
+            let category = product.category;
+            let certificate = product.certificate;
+            console.log("image: " + image + ", cert:" + certificate);
 
-            axios.post("/api/products/", {name, units, price, description, image, category})
-                .then(response => this.products.push(products))
+            axios
+                .post("/api/products/", {
+                    name,
+                    units,
+                    price,
+                    description,
+                    image,
+                    category,
+                    certificate
+                })
+                .then(response => {
+                    this.products.push(product);
+                    Toast.fire({
+                        icon: "success",
+                        title: "Product uploaded"
+                    });
+                })
+                .catch(err => {
+                    console.log("The freaking error is here:", err);
+                });
+        },
+        getResults(page = 1) {
+            axios.get("/api/products?page=" + page).then(response => {
+                this.products = response.data;
+                // console.log(this.products);
+            });
         }
-    },
-}
+    } 
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

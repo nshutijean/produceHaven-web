@@ -5,7 +5,8 @@
     </div>
 </template>
 
-<script>
+<script>// @ts-nocheck
+
 import Chart from 'chart.js'
 export default {
     data() {
@@ -20,7 +21,7 @@ export default {
     },
     methods: {
         async createChart(chartId) {
-            await axios.get('/api/all-orders/').then(response => this.orders = response.data)
+            await axios.get('/api/all-orders/').then(response => this.orders = response.data.total)
             await axios.get('/api/delivers/').then(response => this.delivers = response.data)
             await axios.get('/api/pendings/').then(response => this.pendings = response.data)
 
@@ -32,14 +33,14 @@ export default {
             const myChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    // labels: ['Buyers', 'Vendors'],
+                    // labels: ['O', 'P', 'D'],
                     datasets: [
                         {
                             label: 'Orders piechart',
-                            data: [o, d, p],
+                            data: [o, p, d],
                             backgroundColor: [
-                                'blue',
                                 '#5cb85c',
+                                'blue',
                                 '#292b2c'
                             ],
                             borderColor: [

@@ -1,5 +1,8 @@
 const mix = require('laravel-mix');
 
+// mix.browserSync({
+//     proxy: 'http://127.0.0.1:8000'
+// });
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -11,6 +14,6 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix.js('resources/js/app.js', 'public/js').vue()
     .js('resources/js/bootstrap.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css');

@@ -16,7 +16,8 @@
         "laravel/passport": "~9.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "2.4",
-        "simplesoftwareio/simple-qrcode": "2.0.0"
+        "simplesoftwareio/simple-qrcode": "2.0.0",
+        "spatie/laravel-searchable": "^1.9"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

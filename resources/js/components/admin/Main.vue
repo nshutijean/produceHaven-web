@@ -2,14 +2,14 @@
     <div>
         <div class="row">
             <div class="col-md-4 product-box d-flex align-content-center justify-content-center flex-wrap big-text">
-                <a href="/admin/orders">Orders ({{orders.length}})</a>
+                <a href="/vendor/orders">Orders ({{orders.length}})</a>
             </div>
             <hr>
             <div class="col-md-4 product-box d-flex align-content-center justify-content-center flex-wrap big-text">
-                <a href="/admin/products">Products ({{products.length}})</a>
+                <a href="/vendor/products">Products ({{products.length}})</a>
             </div>
             <div class="col-md-4 product-box d-flex align-content-center justify-content-center flex-wrap big-text">
-                <a href="/admin/users">Users ({{users.length}})</a>
+                <a href="/vendor/users">Users ({{users.length}})</a>
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@ export default {
         axios.get('/api/users/').then(response => this.users = response.data)
         axios.get('/api/showWithAuth/').then(response => this.products = response.data)
         axios.get('/api/orders/').then(response => this.orders = response.data)
-        // console.log(user);
+        // console.log(user); 
     },
 }
 </script>

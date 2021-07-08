@@ -8,7 +8,7 @@
                 <div class="modal-body">
                     <slot name="body">
                         Name: <input type="text" v-model="data.name"><br>
-                        <label for="cat">Category:</label>
+                        <label class="mt-2" for="cat">Category:</label>
                         <select id="cat" v-model="data.category">
                             <option value="fruit">Fruit</option>
                             <option value="vegetable">Vegetable</option>
@@ -16,15 +16,25 @@
                         Units: <br><input type="text" v-model="data.units"><br>
                         Price: <br><input type="text" v-model="data.price"><br><br>
                         <textarea v-model="data.description" placeholder="description"></textarea>
-                        <span>
-                            <img :src="data.image" v-show="data.image != null" class="img-fluid rounded">
-                            <input type="file" id="file" @change="attachFile">
+                        <span class="mt-2">
+                            <!-- <img :src="data.image" v-show="data.image != null" class="img-fluid rounded"> -->
+                            Image:
+                            <input type="file" id="file" @change="attachImg">
+                        </span>
+                        <span class="mt-4">
+                            Certificate:
+                            <input type="file" id="file" @change="attachPdf">
                         </span>
                     </slot>
                 </div>
                 <div class="modal-footer">
-                    <slot name="footer">
-                        <button class="modal-default-button" @click="uploadFile">
+                    <slot name="footer-left" class="float-left">
+                        <button class="modal-default-button" @click="closeIt">
+                            Close
+                        </button>
+                    </slot>
+                    <slot name="footer-right">
+                        <button class="modal-default-button" @click.prevent="uploadFile">
                             Finish
                         </button>
                     </slot>
@@ -39,7 +49,8 @@ export default {
     props: ['product'],
     data() {
         return {
-            attachment: null
+            attachment_img: null,
+            attachment_pdf: null,
         }
     },
     computed: {
@@ -47,37 +58,75 @@ export default {
             if(this.product != null) {
                 return this.product;
             }
-            return {
-                name: "",
-                units: "",
-                price: "",
-                description: "",
-                image: null,
-                category: ""
+            else {
+                return {
+                    name: "",
+                    units: "",
+                    price: "",
+                    description: "",
+                    image: false,
+                    category: "",
+                    certificate: ""
+                }
             }
         }
     },
+    // mounted() {
+    //     console.log(this.product);
+    // },
     methods: {
-        attachFile(event) {
-            this.attachment = event.target.files[0];
+        attachImg(event) {
+            this.attachment_img = event.target.files[0];
+            console.log(this.attachment_img);
+        },
+        attachPdf(event) {
+            this.attachment_pdf = event.target.files[0];
+            console.log(this.attachment_pdf);
+
+        },
+        uploadImage() {
+            var formData = new FormData();
+            formData.append("image", this.attachment_img)
+            axios.post("/api/upload-image", formData, {
+                headers: {
+                'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(response => {
+                this.product.image = response.data;
+                console.log("Image uploaded!")
+                this.uploadCertificate();
+                this.$emit('close', this.product)
+            })
+            .catch(err => {
+                console.log("Error uploading image: ", err)
+            });
+        },
+        uploadCertificate() {
+            var formData = new FormData();
+            formData.append("certificate", this.attachment_pdf)
+            axios.post("/api/upload-pdf", formData, {
+                headers: {
+                'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(response => {
+                // console.log('Cert data:' ,response.data);
+                this.product.certificate = response.data;
+                console.log("Cert uploaded!")
+                // this.$emit('close', this.product)
+            })
+            .catch((err) => {
+                console.log("Error uploading cert: ",err);
+            })
         },
         uploadFile(event){
-        if(this.attachment != null){
-          var formData = new FormData();
-          formData.append("image", this.attachment)
-          axios.post("/api/upload-file", formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          })
-          .then(response => {
-            this.product.image = response.data
-            this.$emit('close', this.product)
-          })
+        if(this.attachment_img != null){
+            this.uploadImage();
         }
-        else {
-          this.$emit('close', this.product)
-        }
+      },
+      closeIt() {
+          this.$emit('close', this.product);
       }
     },
 }

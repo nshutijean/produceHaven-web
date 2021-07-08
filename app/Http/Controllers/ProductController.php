@@ -9,6 +9,7 @@ use Storage;
 use Auth;
 use DB;
 use DateTime;
+use Spatie\Searchable\Search;
 
 
 class ProductController extends Controller
@@ -20,14 +21,39 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //show all products
+        // return response()->json(
+        //     Product::all(),
+        //     200
+        // ); 
+        $data = Product::latest()->paginate(4);
+        
         return response()->json(
-            Product::all(),
-            200
+            $data
         );
     }
+    // public function paginatedProducts() {
+    //     //show all products with pagination
+    //     $data = Product::latest()->paginate(4);
+        
+    //     return response()->json(
+    //         $data
+    //     );
+    // }
 
-    //show products of authorized users
+    //instant search
+    public function searchProduct(Request $request) {
+        $results = (new Search())
+        ->registerModel(Product::class, ['name', 'category'])
+        ->search($request->input('query'));
+
+        return response()->json([
+            'status' => (bool) $results,
+            'data' => $results,
+            'message' => $results ? 'Results retrieved' : 'Failed to retrieve results'
+        ]);
+    }
+
+    //show products of one vendor (authorized)
     public function showWithAuth() {
         return response()->json(
             Product::where('user_id', Auth::id())->get(),
@@ -55,20 +81,14 @@ class ProductController extends Controller
     {
         //validate product before storing
         $this->validate($request, [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => 'required|string',
+            'description' => 'required|string',
             'units' => 'required',
             'price' => 'required',
+            // 'certificate' => 'required|max:20480|mimes:pdf',
+            // 'certificate' => 'required'
         ]);
-
-        // $product = Product::create([
-        //     'name' => $request->name,
-        //     'description' => $request->description,
-        //     'units' => $request->units,
-        //     'price' => $request->price,
-        //     'image' => $request->image,
-        //     'category' => $request->category 
-        // ]); 
+ 
 
         //save product with a qrcode
         $product = new Product;
@@ -90,9 +110,9 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->category = $request->category;
         $product->image = $request->image;
-        $product->expires_at = new DateTime(add(new DateInterval('P15D')));
         $product->user_id = Auth::id();
         $product->qrcodeUrl = url('/').'/storage/app/public/qrcode_img/'.$file_name;
+        $product->certificate = $request->certificate;
 
         $product->save();
 
@@ -114,18 +134,44 @@ class ProductController extends Controller
         return response()->json($product, 200);
     }
 
-    //Uploading a file
-    public function uploadFile(Request $request) {
+    //Uploading an image
+    public function uploadImage(Request $request) {
+        // if($request->hasFile('image')) {
+        //     $name = time()."_".$request->file('image')->getClientOriginalName();
+        //     $request->file('image')->move(public_path('images'), $name);
+        // }
+        // return response()->json([
+        //     asset("images/$name"),
+        //     201,
+        //     // 'message' => asset("images/$name") ? 'Image saved' : 'Image failed to save'
+        // ]);
         if($request->hasFile('image')) {
             $name = time()."_".$request->file('image')->getClientOriginalName();
             $request->file('image')->move(public_path('images'), $name);
         }
-        return response()->json([
-            asset("images/$name"),
-            201,
-            'message' => asset("images/$name") ? 'Image saved' : 'Image failed to save'
-        ]);
+        return response()->json(asset("images/$name"),201);
     }
+
+    //uploading a pdf(certicate)
+    public function uploadPdf(Request $request) {
+
+        // if($request->hasFile('certificate')) {
+        //     $name = time()."_".$request->file('certificate')->getClientOriginalName();
+        //     $request->file('certificate')->move(public_path('certs'), $name);
+    
+        //     return response()->json([
+        //         asset("certs/$name"),
+        //         201,
+        //         // 'message' => asset("certs/$name") ? 'Cert saved' : 'Cert failed to save'
+        //     ]);
+        // } 
+        if($request->hasFile('certificate')){ 
+            $name = time()."_".$request->file('certificate')->getClientOriginalName();
+            $request->file('certificate')->move(public_path('certs'), $name);
+        }
+        return response()->json(asset("certs/$name"),201);
+    }
+
 
     /**
      * Show the form for editing the specified resource.

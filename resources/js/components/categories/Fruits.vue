@@ -11,18 +11,16 @@
                         <li><router-link :to="{name: 'vegetables'}">Vegetables</router-link></li>
                     </ul>
                     <div class="row">
-                        <div class="col-md-3 product-box rounded mr-0.5" v-for="(product,index) in products" v-bind:key="index">
-                            <div v-if="product.category == 'fruit'">
-                                <router-link :to="{path: '/products/'+product.id}">
-                                    <img :src="product.image" :alt="product.name" class="img-fluid rounded mb-3">
-                                    <h5>
-                                        <span v-html="product.name"></span>
-                                        <span class="small-text text-muted float-right">RF {{product.price}}</span>
-                                    </h5>
-                                    <button class="col-md-4 btn btn-sm btn-primary float-right">Buy Now</button>
-                                </router-link>
-                                <span class="float-left text-muted">{{product.category | capitalize}}</span>
-                            </div>    
+                        <div class="col-md-3 product-box rounded mr-0.5" v-for="(product,index) in filteredFruits" :key="index">
+                            <router-link :to="{path: '/products/'+product.id}">
+                                <img :src="product.image" :alt="product.name" class="img-fluid rounded mb-3">
+                                <h5>
+                                    <span v-html="product.name"></span>
+                                    <span class="small-text text-muted float-right">RF {{product.price}}</span>
+                                </h5>
+                                <button class="col-md-4 btn btn-sm btn-primary float-right">Buy Now</button>
+                            </router-link>
+                            <span class="float-left text-muted">{{product.category | capitalize}}</span>    
                         </div>
                     </div>
                 </div>
@@ -35,12 +33,18 @@
 export default {
     data() {
         return {
-            products: []
+            products: [],
+            category: "fruit"
         }
     },
     //mounted() is called after a component is loaded
     mounted() {
-        axios.get("api/products").then(response => this.products = response.data);
+        axios.get("api/products").then(response => this.products = response.data.data);
+    },
+    computed: {
+        filteredFruits() {
+            return this.products.filter(product => !product.category.indexOf(this.category));
+        }
     },
 }
 </script>
