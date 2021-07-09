@@ -11,7 +11,7 @@
                     <strong>Rwanda Standards Board</strong>
                 </p>
                 <p>
-                    <a href="www.rsb.gov.rw/" target="_blank" class="btn btn-success" role="button">
+                    <a href="https://www.rsb.gov.rw/" target="_blank" class="btn btn-success" role="button">
                         Learn about RSB<i
                             class="fas fa-arrow-right"
                             style="padding-left: 7px;"
