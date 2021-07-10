@@ -10,7 +10,8 @@
             <div> 
                 <div v-if="products.data = []" class="mt-3">
                     <p>
-                        No products uploaded yet, add one by clicking the button below
+                        <!-- link to an apk in google drive -->
+                        No products uploaded yet! Use our <a href="#">mobile app</a> to add one for better experience
                     </p>
                 </div>
                 <table v-else class="table table-responsive table-striped">
@@ -81,9 +82,9 @@
             v-show="addingProduct != null"
         />
         <br />
-        <button class="btn btn-primary" @click="newProduct">
+        <!-- <button class="btn btn-primary" @click="newProduct">
             Add New Product
-        </button>
+        </button> -->
     </div>
 </template>
 
