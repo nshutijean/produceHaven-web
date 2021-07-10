@@ -9,7 +9,7 @@
             </div> -->
             <div> 
                 <div v-if="products.data = []" class="mt-3">
-                    <p>
+                    <p class="warn">
                         <!-- link to an apk in google drive -->
                         No products uploaded yet! Use our <a href="#">mobile app</a> to add one for better experience
                     </p>
@@ -229,4 +229,20 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.warn{
+    border: 1px solid grey;
+    /* color: white; */
+    padding: 3px;
+    margin-top: 30px;
+    padding-right: auto;
+    text-align: center;
+    background: white;
+}
+
+@media (max-width:414px) {
+    .warn{
+        padding: 12px 4px;
+    }
+}
+</style>
