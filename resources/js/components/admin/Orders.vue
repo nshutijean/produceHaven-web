@@ -1,42 +1,52 @@
 <template>
-    <div>
-        <table class="table table-responsive table-striped">
-            <thead>
-                <tr>
-                    <td></td>
-                    <td>Product</td>
-                    <td>Quantity</td>
-                    <td>Cost</td>
-                    <td>Delivery Address</td>
-                    <td>is Delivered?</td>
-                    <td>Action</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(order, index) in orders.data" :key="index">
-                    <td>{{index+1}}</td> 
-                    <td>{{order.product.name}}</td>
+    <div class="col-lg-12 col-md-8">
+            <div>
+              <div class="float-left" style="font-weight:600;font-size: 1.125rem;line-height: 1.75rem;">
+                <p>List of orders made</p>
+              </div>
+            </div>
+            <div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead class="thead-inverse">
+                  <tr>
+                    <th>#</th>
+                    <th>ProductID</th>
+                    <th>Quantity</th>
+                    <!-- <th>Cost</th> -->
+                    <th>Delivery Address</th>
+                    <th>is Delivered?</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(order, index) in orders.data" :key="index">
+                    <td>{{index+1}}</td>
+                    <td v-html="order.product_id"></td>
                     <td>{{order.quantity}}</td>
-                    <td>{{order.quantity * order.product.price}}</td>
+                    <!-- <td>{{order.price}}</td> -->
                     <td>{{order.address}}</td>
                     <td>{{order.is_delivered == 1 ? "Yes" : "No"}}</td>
+                    <!-- <td v-if="order.is_delivered == 0"><button class="btn btn-success" @click="deliver(index)">Deliver</button></td> -->
                     <td v-if="order.is_delivered == 0">
                         <button class="btn btn-success" @click="deliver(index)">Deliver</button>
                     </td>
                 </tr>
-            </tbody>
-        </table>
-        <!-- <div>
-            <pagination :data="orders" @pagination-change-page="getResults"></pagination>
-        </div> -->
-    </div>
+                </tbody>
+              </table>
+                <div>
+                    <pagination :data="orders" @pagination-change-page="getResults"></pagination>
+                </div>
+            </div>
+        </div>
 </template>
 
 <script>
 export default {
     data() {
         return {
-            orders: [],
+            orders: {},
             user: [],
             p_name: "",
             address: "",
@@ -48,20 +58,20 @@ export default {
         }
     },
     mounted() {
-        // this.getResults();
-        axios.get('/api/all-orders/').then(
-            response => {
-                this.orders = response.data
-            }
-        );
+        this.getResults();
+        // axios.get('/api/all-orders/').then(
+        //     response => {
+        //         this.orders = response.data
+        //     }
+        // );
     },
     methods: {
-        // getResults(page = 1) {
-        //     axios.get('/api/orders?page=' + page)
-        //     .then(response => {
-        //         this.orders = response.data;
-        //     });
-		// },
+        getResults(page = 1) {
+            axios.get('/api/all-orders?page=' + page)
+            .then(response => {
+                this.orders = response.data;
+            });
+		},
         shipIt() {
             let pp_name = this.p_name;
             let d_address = this.address;
@@ -97,11 +107,11 @@ export default {
             });
         },
         deliver(index) {
-            let order = this.orders[index];
-            this.p_name = order.product.name;
+            let order = this.orders.data[index];
+            this.p_name = order.name;
             this.address = order.address;
             this.quantity = order.quantity;
-            this.cost = order.quantity * order.product.price;
+            this.cost = order.quantity * order.price;
 
             //buyer_info
             this.buyer_id = order.user_id;
@@ -111,9 +121,10 @@ export default {
             //send delivery details to whatsapp
             this.shipIt();
 
+            //change order's delivery state
             axios.patch(`/api/orders/${order.id}/deliver`)
                 .then(response => {
-                    this.orders[index].is_delivered = 1;
+                    this.orders.data[index].is_delivered = 1;
                     console.log(response);
                     //force Vue instance to rerender
                     this.$forceUpdate();
