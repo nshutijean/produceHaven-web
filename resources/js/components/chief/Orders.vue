@@ -76,7 +76,7 @@
                     <pagination :data="orders" @pagination-change-page="getResults"></pagination>
                 </div>
             </div>
-          </div>
+        </div>
         </div>
     </div>
 </template>
