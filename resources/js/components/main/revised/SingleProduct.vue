@@ -17,9 +17,9 @@
                         <div class="col">
                             <h1>{{ product.price }} RF/</h1>
                             <p>{{ product.units }} items remaining<br></p>
-                            <p @click="openPdf()" id="link" class="font-weight-bolder">
+                            <a :href="product.certificate" id="link" download class="font-weight-bolder">
                                 Open Certficate here!
-                            </p>
+                            </a>
                             <router-link :to="{ path: '/checkout?pid=' + product.id }" class="btn btn-primary buy-now" type="button">
                                 Buy Now
                             </router-link>
@@ -57,29 +57,6 @@ export default {
         this.setDefaults();
     },
     methods: {
-        openPdf() {
-            //https://documents.adventistarchives.org/Books/HT1888.pdf
-            let height = window.innerHeight;
-            Swal.fire({
-                title: '<strong>RSB Certicate</strong>',
-                html:
-                    // '<iframe src="https://documents.adventistarchives.org/Books/HT1888.pdf" style="width: 100%;height: 100%;border: none;"></iframe>',
-                    '<center><embed type="application/pdf" src="https://documents.adventistarchives.org/Books/HT1888.pdf" width="500px" height="750px"/></center>',
-                showCloseButton: true,
-                showCancelButton: true,
-                focusConfirm: false,
-                cancelButtonText:
-                    '<i class="fa fa-thumbs-down"></i>',
-                cancelButtonAriaLabel: 'Thumbs down'
-                })
-        },
-        setDefaults() {
-            // let user = JSON.parse(localStorage.getItem('bigStore.user'));
-            // console.log(user);
-            // if(user.is_admin) {
-            //     this.name = user.name;
-            // }
-        },
     }
 }
 </script>
@@ -100,6 +77,7 @@ export default {
   /* float: right; */
   width: 100%;
   margin-top: 20px;
+  text-decoration: none;
 }
 
 
@@ -180,6 +158,8 @@ export default {
 #right-down #link {
   text-decoration: underline;
   margin-top: 5px;
+  font-size: large;
+  color: black;
 }
 
 @media (min-width: 300px) {
