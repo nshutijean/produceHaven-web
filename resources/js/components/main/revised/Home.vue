@@ -7,15 +7,16 @@
                     <div class="row">
                         <div id="filters" style="background-color: #e9ffeb;">
                             <div class="col-md-12">
-                                <p style="font-family: Nunito, sans-serif;">Filter products by category:</p>
+                                <p style="font-family: Nunito, sans-serif;">Filter products:</p>
                             </div>
                             <div class="col">
-                                <div class="dropdown"><button class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button">Select category</button>
-                                    <select v-model="category" class="dropdown-menu" role="menu">
-                                      <option class="dropdown-item" role="presentation" href="#">All</option>
-                                      <option class="dropdown-item" role="presentation" href="#">Fruit</option>
-                                      <option class="dropdown-item" role="presentation" href="#">Vegetable</option>
-                                    </select>
+                                <div class="form-group">
+                                  <label for="exampleFormControlSelect1" style="font-weight: 500">By category</label>
+                                  <select v-model="category" class="form-control" id="exampleFormControlSelect1">
+                                    <option value="">All</option>
+                                    <option value="fruit">Fruits</option>
+                                    <option value="vegetable">Vegetable</option>
+                                  </select>
                                 </div>
                             </div>
                         </div>
@@ -35,7 +36,7 @@
                                       <img :src="product.image" :alt="product.name" class="img-fluid" id="img-manip" loading="lazy">
                                     </div>
                                     <div>
-                                        <h4 class="mt-3 cd-t"><span class="float-right text-muted">{{ product.price }}</span>{{ product.name }}</h4>
+                                        <h4 class="mt-3 cd-t"><span class="float-right text-muted">{{ product.price }} RF</span>{{ product.name }}</h4>
                                     </div>
                                     <div style="font-size: 20px;">
                                         <span class="float-right type-style" style="background-color: rgb(52,254,1);">
@@ -66,7 +67,9 @@ export default {
     data() {
         return {
             products: [],
-            category: ""
+            category: "",
+            fruitColor: "yellow",
+            vegColor: "green"
         }
     },
     //mounted() is called after a component is loaded
@@ -225,6 +228,7 @@ input[type="search"]::placeholder {
   border-radius: 14px;
   padding: 0px 10px;
   opacity: .7;
+  color: white;
 }
 
 #cat-list {
