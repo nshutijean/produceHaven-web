@@ -35,7 +35,7 @@
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">
                                     <!-- <button type="submit" class="btn btn-primary" @click="handleSubmit"> -->
-                                    <button type="submit" class="btn btn-primary">
+                                    <button ref="lgnBtn" type="submit" class="btn btn-primary">
                                         Login
                                     </button>
                                 </div>
@@ -67,6 +67,7 @@ export default {
                 console.log(this.form)
                 let email = this.form.email;
                 let password = this.form.password;
+                this.$refs.lgnBtn.innerHTML = 'Logging in ...'
                 this.form.post('api/login', {email, password})
                 .then((response) => {
                     
@@ -109,6 +110,7 @@ export default {
                         icon: 'error',
                         title: 'The given data was invalid'
                     })
+                    this.$refs.lgnBtn.innerHTML = 'Login'
                 });
             
         },
