@@ -13,6 +13,7 @@
                   <tr>
                     <th>#</th>
                     <th>ProductID</th>
+                    <th>ProductName</th>
                     <th>Quantity</th>
                     <!-- <th>Cost</th> -->
                     <th>Delivery Address</th>
@@ -21,9 +22,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(order, index) in orders.data" :key="index">
+                  <tr v-for="(order, index) in newOrders" :key="index">
                     <td>{{index+1}}</td>
                     <td v-html="order.product_id"></td>
+                    <td>{{ order.product.name }}</td>
                     <td>{{order.quantity}}</td>
                     <!-- <td>{{order.price}}</td> -->
                     <td>{{order.address}}</td>
@@ -35,9 +37,9 @@
                 </tr>
                 </tbody>
               </table>
-                <div>
+                <!-- <div>
                     <pagination :data="orders" @pagination-change-page="getResults"></pagination>
-                </div>
+                </div> -->
             </div>
         </div>
 </template>
@@ -46,32 +48,48 @@
 export default {
     data() {
         return {
-            orders: {},
+            orders: [],
             user: [],
+            vendorUser: null,
             p_name: "",
             address: "",
             quantity: "",
             cost: "",
             phonenumber: "",
             buyer_id: null,
-            buyer_name: ""
+            buyer_name: "",
+            newOrders: []
         }
     },
+    beforeMount() {
+        this.vendorUser = JSON.parse(localStorage.getItem('bigStore.user'));
+        axios.get('/api/orders/')
+        .then(
+            response => {
+                this.orders = response.data
+                this.orders.forEach(order => {
+                        //orders from this specific vendor
+                        if(this.vendorUser.id == order.product.user_id) {
+                            return this.newOrders = this.orders
+                    }
+                });
+                
+            }
+        )
+        .catch(err => {
+            console.log(err)
+        })
+    },
     mounted() {
-        this.getResults();
-        // axios.get('/api/all-orders/').then(
-        //     response => {
-        //         this.orders = response.data
-        //     }
-        // );
+        // this.getResults();
     },
     methods: {
-        getResults(page = 1) {
-            axios.get('/api/all-orders?page=' + page)
-            .then(response => {
-                this.orders = response.data;
-            });
-		},
+        // getResults(page = 1) {
+        //     axios.get('/api/all-orders?page=' + page)
+        //     .then(response => {
+        //         this.orders = response.data;
+        //     });
+		// },
         shipIt() {
             let pp_name = this.p_name;
             let d_address = this.address;
@@ -103,7 +121,7 @@ export default {
                 this.user = response.data;
                 this.phonenumber = response.data.phoneNumber;
                 this.buyer_name = response.data.name;
-                // console.log(this.buyer_name)
+
             });
         },
         deliver(index) {
@@ -125,7 +143,6 @@ export default {
             axios.patch(`/api/orders/${order.id}/deliver`)
                 .then(response => {
                     this.orders.data[index].is_delivered = 1;
-                    console.log(response);
                     //force Vue instance to rerender
                     this.$forceUpdate();
             })
