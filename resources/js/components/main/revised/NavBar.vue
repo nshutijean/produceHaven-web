@@ -2,7 +2,9 @@
     <div>
         <nav class="navbar navbar-light navbar-expand-md">
         <div class="container-fluid">
-            <router-link :to="{name: 'home'}" class="navbar-brand" href="#" style="font-family: 'Playfair Display', serif; color: #38c172"><strong>ProduceHaven</strong></router-link>
+            <router-link :to="{name: 'home'}" class="navbar-brand" href="#" style="font-family: 'Playfair Display', serif; color: #38c172">
+                <strong>ProduceHaven</strong>
+            </router-link>
             <a class="navbar-brand" href="#" style="font-family: 'Playfair Display', serif;">Blog</a>
             <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
@@ -88,6 +90,7 @@ export default {
             //Empty cart
             this.$store.state.cart.splice(0, this.$store.state.cart.length);
             this.$store.state.cartCount = 0;
+            this.$forceUpdate()
             
         },
 

@@ -8,13 +8,13 @@
                 </p>
             </div> -->
             <div> 
-                <div v-if="products.data = []" class="mt-3">
+                <!-- link to an apk in google drive -->
+                <!-- <div v-if="products.data.data = []" class="mt-3">
                     <p class="warn">
-                        <!-- link to an apk in google drive -->
                         No products uploaded yet! Use our <a href="#">mobile app</a> to add one for better experience
                     </p>
-                </div>
-                <table v-else class="table table-responsive table-striped">
+                </div> -->
+                <table class="table table-responsive table-striped">
                     <thead>
                         <tr>
                             <td></td>
