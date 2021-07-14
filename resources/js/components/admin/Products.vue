@@ -1,76 +1,74 @@
 <template>
     <div>
-        <div>
-            
-            <!-- <div v-if="products.data == null" class="mt-3">
-                <p>
-                    The problem is on our side. Refresh the page or <a href="#">contact us</a>
+        <div class="col-lg-12 col-md-8">
+            <div v-if="(products.data == [])" class="mt-3">
+                <p class="warn">
+                    No products uploaded yet! Use our
+                    <a href="#">mobile app</a> to add one for better experience
                 </p>
-            </div> -->
-            <div> 
-                <!-- link to an apk in google drive -->
-                <!-- <div v-if="products.data.data = []" class="mt-3">
-                    <p class="warn">
-                        No products uploaded yet! Use our <a href="#">mobile app</a> to add one for better experience
-                    </p>
-                </div> -->
-                <table class="table table-responsive table-striped">
-                    <thead>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(product, index) in products.data"
-                            :key="index"
-                            @dblclick="editingItem = product"
-                        >
-                            <td>{{ index + 1 }}</td>
-                            <td>{{ product.name }}</td>
-                            <td>
-                                <!-- <select id="cat" v-model="product.category">
-                            <option selected value="category">Fruit</option>
-                            <option value="vegetable">Vegetable</option>
-                        </select> -->
-                                {{ product.category }}
-                            </td>
-                            <td>
-                                <!-- <input type="text" v-model="product.units"> -->
-                                {{ product.units }}
-                            </td>
-                            <td>
-                                <!-- <input type="text" v-model="product.price"> -->
-                                {{ product.price }}
-                            </td>
-                            <td>
-                                <!-- <input type="text" v-model="product.description"> -->
-                                {{ product.description }}
-                                <div
-                                    class="float-right ml-5"
-                                    style="color:red; cursor:pointer"
-                                    @click="deleteProduct(product)"
-                                >
-                                    <i class="fas fa-trash"></i>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            </div>
+            <div v-lse>
+                <div>
+                    <div
+                        class="float-left"
+                        style="font-weight: 600; font-size: 1.125rem; line-height: 1.75rem"
+                    >
+                        <p>All products uploaded on this store</p>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-inverse">
+                            <tr class="font-weight-bold">
+                                <td>#</td>
+                                <td>Name</td>
+                                <td>Category</td>
+                                <td>Units</td>
+                                <td>Price</td>
+                                <td>Desc</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(product, index) in products"
+                                :key="index"
+                                @dblclick="editingItem = product"
+                            >
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ product.name }}</td>
+                                <td>
+                                    <!-- <select id="cat" v-model="product.category">
+                    <option selected value="category">Fruit</option>
+                    <option value="vegetable">Vegetable</option>
+                </select> -->
+                                    {{ product.category }}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" v-model="product.units"> -->
+                                    {{ product.units }}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" v-model="product.price"> -->
+                                    {{ product.price }}
+                                </td>
+                                <td>
+                                    <!-- <input type="text" v-model="product.description"> -->
+                                    {{ product.description }}
+                                    <div
+                                        class="float-right ml-5"
+                                        style="color:red; cursor:pointer"
+                                        @click="deleteProduct(product)"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div>
-            <pagination
-                :data="products"
-                @pagination-change-page="getResults"
-            ></pagination>
-        </div>
         <Modal
             @close="endEditing"
             :product="editingItem"
@@ -99,11 +97,13 @@ export default {
         };
     },
     components: { Modal },
-    // beforeMount() {
-    //     axios.get('/api/products/').then(response => this.products = response.data)
-    // },
+    beforeMount() {
+        axios
+            .get("/api/showWithAuth/")
+            .then(response => (this.products = response.data));
+    },
     mounted() {
-        this.getResults();
+        // this.getResults();
     },
     methods: {
         newProduct() {
@@ -157,34 +157,34 @@ export default {
             //         console.log(err);
             //     });
             Swal.fire({
-                title: 'Do you want to delete this product?',
+                title: "Do you want to delete this product?",
                 showDenyButton: true,
                 showCancelButton: true,
-                confirmButtonText: `Delete`,
+                confirmButtonText: `Delete`
                 // denyButtonText: `Don't save`,
-                }).then((result) => {
+            }).then(result => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     axios
-                    .delete(`/api/products/${product.id}`)
-                    .then(result => {
-                        // console.log("Deleting...")
-                        this.products.data.splice(index, 1);
-                        // console.log("Deleted!")
-                        Swal.fire(
-                            "Deleted!",
-                            "Your file has been deleted.",
-                            "success"
-                        );
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-                } 
+                        .delete(`/api/products/${product.id}`)
+                        .then(result => {
+                            // console.log("Deleting...")
+                            this.products.data.splice(index, 1);
+                            // console.log("Deleted!")
+                            Swal.fire(
+                                "Deleted!",
+                                "Your file has been deleted.",
+                                "success"
+                            );
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                }
                 // else if (result.isDenied) {
                 //     Swal.fire('Changes are not saved', '', 'info')
                 // }
-                })
+            });
         },
         addProduct(product) {
             this.addingProduct = null;
@@ -225,12 +225,12 @@ export default {
                 // console.log(this.products);
             });
         }
-    } 
+    }
 };
 </script>
 
 <style scoped>
-.warn{
+.warn {
     border: 1px solid grey;
     /* color: white; */
     padding: 3px;
@@ -240,8 +240,8 @@ export default {
     background: white;
 }
 
-@media (max-width:414px) {
-    .warn{
+@media (max-width: 414px) {
+    .warn {
         padding: 12px 4px;
     }
 }
