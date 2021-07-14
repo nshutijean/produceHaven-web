@@ -40,7 +40,7 @@
                                     </div>
                                     <div style="font-size: 20px;">
                                         <span class="float-right type-style" style="background-color: rgb(52,254,1);">
-                                          {{ product.category }}
+                                          {{ product.category.toLowerCase() }}
                                         </span>
                                         <p>{{ product.units }} items</p>
                                     </div>
