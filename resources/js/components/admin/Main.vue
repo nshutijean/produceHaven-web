@@ -2,7 +2,7 @@
     <div>
         <div class="row">
             <div class="col-md-4 product-box d-flex align-content-center justify-content-center flex-wrap big-text">
-                <a href="/vendor/orders">Orders ({{orders.length}})</a>
+                <a href="/vendor/orders">Orders ({{newOrders.length}})</a>
             </div>
             <hr>
             <div class="col-md-4 product-box d-flex align-content-center justify-content-center flex-wrap big-text">
@@ -21,14 +21,28 @@ export default {
         return {
             user: null,
             orders: [],
+            newOrders: [],
             products: [],
-            users: []
+            users: [],
+            vendorUser: null
         }
+    },
+    beforeMount() {
+        this.vendorUser = JSON.parse(localStorage.getItem('bigStore.user'));
     },
     mounted() {
         axios.get('/api/users/').then(response => this.users = response.data)
         axios.get('/api/showWithAuth/').then(response => this.products = response.data)
-        axios.get('/api/orders/').then(response => this.orders = response.data)
+        axios.get('/api/orders/').then(response => {
+            this.orders = response.data;
+            this.orders.forEach(order => {
+                //orders from this specific vendor
+                if(this.vendorUser.id == order.product.user_id) {
+                    return this.newOrders = this.orders
+                }
+            });
+
+        })
         // console.log(user); 
     },
 }
