@@ -104,11 +104,9 @@ class UserController extends Controller
         return response()->json(['message' => 'Failed, Invalid Token.']);
     }
 
-    //all users with their orders
+    //buyers who made orders
     public function index() {
-        return response()->json(User::with(['orders'])->get());
-        // return response()->json(User::with(['orders','product'])->get(), 200);
-
+        return response()->json(User::with(['orders'])->where('is_admin', '0')->get());
     }
 
     // public function paginatedUsers() {
@@ -237,6 +235,11 @@ class UserController extends Controller
 
     public function showOrders(User $user) {
         return response()->json($user->orders()->with(['product'])->get(), 200); 
+    }
+
+    public function ordersMade(User $user)
+    {
+        //if user.is_admin == 1, then select * from orders, products where product.user_id = order.product.user_id
     }
 
     public function countBuyers() {
