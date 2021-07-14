@@ -12,7 +12,7 @@
             </div>
             <div class="col-md-4 product-box d-flex align-content-center justify-content-center flex-wrap">
                 <a class="big-text" href="/vendor/users">Users ({{users.length}})</a>
-                <p class="text-center font-weight-bold small" style="font-family: Nunito, sans-serif;">Users who made the orders</p>
+                <p class="text-center font-weight-bold small" style="font-family: Nunito, sans-serif;">Users who made orders through my store</p>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@ export default {
         this.vendorUser = JSON.parse(localStorage.getItem('bigStore.user'));
     },
     mounted() {
-        axios.get('/api/users/').then(response => this.users = response.data)
+        this.getUsersWithOrders()
         axios.get('/api/showWithAuth/').then(response => this.products = response.data)
         axios.get('/api/orders/').then(response => {
             this.orders = response.data;
@@ -47,6 +47,32 @@ export default {
 
         })
         // console.log(user); 
+    },
+    methods: {
+        getUsersWithOrders() {
+            axios.get('/api/orders/')
+            .then(
+                response => {
+                    this.orders = response.data
+                    this.orders.forEach(order => {
+                        // orders from this specific vendor
+                        if(this.vendorUser.id == order.product.user_id) {
+                            axios.get(`/api/users/${order.user_id}`)
+                            .then((response) => {
+                                //insert response.data into this.users array
+                                this.users.push(response.data)
+                                console.log(this.users)
+                            }).catch((err) => {
+                                console.error(err)
+                            });
+                        } 
+                    });
+                }
+            )
+            .catch(err => {
+                console.log(err)
+            })
+        }
     },
 }
 </script>
