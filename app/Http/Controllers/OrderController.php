@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource. 
      *
      * @return \Illuminate\Http\Response
      */
@@ -71,13 +71,13 @@ class OrderController extends Controller
             'quantity' => $request->quantity,
             'address' => $request->address
         ]);
-        // $order = new Order;
+        $order = new Order;
         //retrieve all products(with their orders)
-        // $products = Product::where('user_id', Auth::id())->get();
-        // $orders = Order::with(['product'])->get();
-        // $order->quantity = $request->quantity;
-        // $quantity = $order->quantity;
-        // Product::where('id', $request->product_id)->decrement('units',$request->quantity);
+        $products = Product::where('user_id', Auth::id())->get();
+        $orders = Order::with(['product'])->get();
+        $order->quantity = $request->quantity;
+        $quantity = $order->quantity;
+        Product::where('id', $request->product_id)->decrement('units',$request->quantity);
         
         // foreach($orders as $ord) {
         //     
