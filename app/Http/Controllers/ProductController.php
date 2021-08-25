@@ -88,20 +88,11 @@ class ProductController extends Controller
             // 'certificate' => 'required|max:20480|mimes:pdf',
             // 'certificate' => 'required'
         ]);
- 
 
-        //save product with a qrcode
-        $product = new Product;
-        $product->id = $request->id;
-        $id = $product->id;
+        $product = new Product;      
 
-        $image = \QrCode::format('png')
-            ->size(300)->errorCorrection('H')
-            ->generate('http://localhost:8000/products/$id');
-
+        // qrcode (png) file name
         $file_name = time().'.png';
-        $output_file = '/public/qrcode_img/'.$file_name;
-        Storage::disk('local')->put($output_file, $image);
 
         
         $product->name = $request->name;
@@ -116,10 +107,20 @@ class ProductController extends Controller
 
         $product->save();
 
+        // generating a URL for qrcode and storing the png locally
+        $p_id = $product->id;
+        $image = \QrCode::format('png')
+            ->size(300)->errorCorrection('H')
+            ->generate("http://localhost:8000/products/$p_id");
+        
+        $output_file = '/public/qrcode_img/'.$file_name;
+        Storage::disk('local')->put($output_file, $image);
+
+        // json response
         return response()->json([
             'status' => (bool) $product,
             'data'  => $product,
-            'message' => $product ? 'Product successfully stored' : 'Error storing product'
+            'message' => $product ? 'Product successfully stored' : 'Error storing product',
         ]);
     }
 
