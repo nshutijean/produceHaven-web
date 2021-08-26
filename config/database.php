@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'postgres'),
 
     /*
     |--------------------------------------------------------------------------
@@ -62,32 +62,32 @@ return [
         //         PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
         //     ]) : [],
         // ],
-        'mysql' => [
-            'driver' => 'mysql',
-            'url' => env('producehaven.herokuapp.com'),
-            // 'url' => 'producehaven.herokuapp.com',
-            'host' => env('DB_HOST', 'db4free.net'),
-            // 'host' => 'db4free.net',
-            'port' => env('DB_PORT', '3306'),
-            // 'port' => '3306',
-            'database' => env('DB_DATABASE', 'producehavendb'),
-            // 'database' => 'producehavendb',
-            'username' => env('DB_USERNAME', 'root73'),
-            // 'username' => 'root73',
-            'password' => env('DB_PASSWORD', 'ProduceHaven123'),
-            // 'password' => 'ProduceHaven123',
-            'unix_socket' => env('DB_SOCKET', ''),
-            // 'unix_socket' => '',
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'strict' => true,
-            'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
-        ],
+        // 'mysql' => [
+        //     'driver' => 'mysql',
+        //     'url' => env('producehaven.herokuapp.com'),
+        //     // 'url' => 'producehaven.herokuapp.com',
+        //     'host' => env('DB_HOST', 'db4free.net'),
+        //     // 'host' => 'db4free.net',
+        //     'port' => env('DB_PORT', '3306'),
+        //     // 'port' => '3306',
+        //     'database' => env('DB_DATABASE', 'producehavendb'),
+        //     // 'database' => 'producehavendb',
+        //     'username' => env('DB_USERNAME', 'root73'),
+        //     // 'username' => 'root73',
+        //     'password' => env('DB_PASSWORD', 'ProduceHaven123'),
+        //     // 'password' => 'ProduceHaven123',
+        //     'unix_socket' => env('DB_SOCKET', ''),
+        //     // 'unix_socket' => '',
+        //     'charset' => 'utf8mb4',
+        //     'collation' => 'utf8mb4_unicode_ci',
+        //     'prefix' => '',
+        //     'prefix_indexes' => true,
+        //     'strict' => true,
+        //     'engine' => null,
+        //     'options' => extension_loaded('pdo_mysql') ? array_filter([
+        //         PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+        //     ]) : [],
+        // ],
 
         'pgsql' => [
             'driver' => 'pgsql',
